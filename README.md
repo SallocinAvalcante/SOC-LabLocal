@@ -62,7 +62,7 @@ Esse gap é o ponto central deste documento.
 
 ## 3. Arquitetura do Laboratório
 
-O ambiente é composto por quatro VMs em rede host-only, todas na sub-rede `192.168.56.0/24`:
+O ambiente é composto por quatro VMs em rede internal Network, todas na sub-rede `192.168.56.0/24`:
 
 | VM | Sistema Operacional | IP | Função |
 |---|---|---|---|
@@ -355,4 +355,4 @@ Nenhuma das técnicas documentadas deve ser replicada contra sistemas sem autori
 
 ---
 
-*Documentação gerada como parte do processo de aprendizado em SOC, monitoramento e detection engineering.*
+*Documentação mantida como parte do processo de aprendizado em SOC, monitoramento e detection engineering.*
