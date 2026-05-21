@@ -1,0 +1,29 @@
+  version: '3'
+  services:
+    prometheus:
+     image: prom/prometheus
+     ports:
+       - "9090:9090"
+     restart: unless-stopped
+
+    grafana:
+      image: grafana/grafana
+      ports:
+        - "3000:3000"
+      restart: unless-stopped
+
+    zabbix:
+      image: zabbix/zabbix-appliance:latest
+      ports:
+        - "8080:80"
+        - "10051:10051"
+      restart: unless-stopped
+    juice-shop:
+      image: bkimminich/juice-shop
+      container_name: juice-shop1
+      ports:
+        - "3001:3000"
+      restart: unless-stopped
+      volumes:
+        - ./juice-data:/data
+
