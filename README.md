@@ -89,7 +89,7 @@ O Ubuntu Server (`MON01`) concentra os serviços de monitoramento e também hosp
 
 O `MON01` executa múltiplos serviços via Docker, permitindo uma stack de monitoramento completa lado a lado com a aplicação vulnerável utilizada nos testes.
 
-![Containers Docker no Ubuntu](evidence/img/print_dockersUbuntu_01.png)
+![Containers Docker no Ubuntu](evidence/img/print_dockersUbunto_01.png)
 
 | Serviço | Porta | Finalidade |
 |---|---|---|
@@ -267,65 +267,25 @@ A ausência de alertas foi tratada como ponto de partida para uma investigação
 
 As regras ET Open para SQL Injection tipicamente utilizam a variável `$HTTP_PORTS` para delimitar o escopo de inspeção HTTP. Se essa variável estiver definida apenas com as portas padrão (`80`, `8080`, `443`), a porta `3001` — onde o Juice Shop está exposto — ficaria fora do escopo de inspeção.
 
-**Verificação recomendada:**
-
-```yaml
-# suricata.yaml
-vars:
-  port-groups:
-    HTTP_PORTS: "80,8080,3001"
-```
 
 ### 10.2 Falha no parsing da camada de aplicação (app-layer)
 
 O Suricata realiza inspeção de protocolos na camada de aplicação. Para que as regras de SQLi operem, o tráfego HTTP precisa ser corretamente parseado. Se o Suricata não reconhecer o tráfego na porta `3001` como HTTP, a inspeção de payload não ocorre.
 
-**Verificação recomendada:** Checar os logs de stderr do Suricata e o campo `app_proto` no `eve.json` para confirmar se o tráfego na porta `3001` está sendo classificado como `http`.
 
 ### 10.3 Checksum offloading / NIC offloading
 
 Em ambientes virtualizados, o checksum de pacotes pode ser calculado pela placa de rede virtual (offloading), resultando em pacotes com checksum inválido do ponto de vista do sistema operacional. O Suricata, dependendo da configuração, pode descartar esses pacotes ou falhar no parsing.
 
-**Verificação recomendada:**
-
-```bash
-sudo ethtool -K enp0s8 rx off tx off
-```
-
-E no `suricata.yaml`:
-
-```yaml
-af-packet:
-  - interface: enp0s8
-    checksum-checks: no
-```
-
 ### 10.4 Configuração do EVE log
 
 É possível que o `eve.json` esteja configurado para registrar apenas determinados tipos de eventos, excluindo alertas. Uma misconfiguration no bloco `outputs` do `suricata.yaml` poderia suprimir silenciosamente os alertas.
 
-**Verificação recomendada:** Confirmar que o tipo `alert` está habilitado no output EVE:
-
-```yaml
-outputs:
-  - eve-log:
-      enabled: yes
-      types:
-        - alert
-        - http
-        - dns
-```
 
 ### 10.5 Ausência de regras locais customizadas
 
 As regras ET Open são voltadas para tráfego em portas padrão e comportamentos conhecidos. Para cobrir cenários específicos do laboratório — como SQLi em porta não-padrão —, regras customizadas em `local.rules` poderiam ser criadas para validar se a engine de detecção está funcional de forma isolada.
 
-**Ação recomendada:** Criar uma regra de teste simples:
-
-```bash
-# /etc/suricata/rules/local.rules
-alert http any any -> $HOME_NET 3001 (msg:"TEST - SQLi keyword detected"; content:"UNION SELECT"; http_uri; nocase; sid:9000001; rev:1;)
-```
 
 ### 10.6 Modo de captura AF_PACKET e tráfego local (loopback)
 
@@ -333,7 +293,7 @@ Quando a origem e o destino do tráfego são o mesmo host (conexões localhost),
 
 ---
 
-## 11. Próximos Passos
+## 11. Continuação
 
 Com base nas hipóteses levantadas, os próximos passos do laboratório são:
 
@@ -344,7 +304,7 @@ Com base nas hipóteses levantadas, os próximos passos do laboratório são:
 - [ ] **Revisar configuração EVE**: Confirmar que alertas estão habilitados no bloco de outputs
 - [ ] **Habilitar logging de debug do Suricata**: Analisar stderr para mensagens de erro de parsing
 - [ ] **Testar com tráfego HTTP simples**: Gerar uma requisição com payload conhecido e validar se aparece no `eve.json` como `http`
-- [ ] **Documentar os resultados**: Registrar cada hipótese testada com evidências de confirmação ou descarte
+- [ ] **Documentar os resultados**: Registrar cada hipótese testada com evidências de confirmação ou descarte em uma branch deste repositorio
 
 ---
 
