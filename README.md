@@ -112,6 +112,8 @@ A variável `HTTP_PORTS` foi ajustada para incluir a porta `3001`, utilizada pel
 
 **Resultado:** eventos HTTP passaram a aparecer corretamente no `eve.json`.
 
+![Alerta no EVE](evidence/img/print_eveAlert_12.png)
+
 **Conclusão:** o parser HTTP do Suricata estava funcional; a ausência da porta `3001` no escopo de inspeção HTTP era, de fato, um fator relevante, e essa hipótese foi confirmada como parcialmente responsável pela falta de visibilidade sobre o tráfego HTTP.
 
 ### 6.2 Validação do eve.json
@@ -134,6 +136,8 @@ Para isolar definitivamente a engine de detecção do conjunto de regras ET Open
 alert tcp any any -> any any (msg:"LOCAL TEST RAW SQLMAP"; flow:established,to_server; content:"sqlmap"; nocase; sid:1000003; rev:1;)
 ```
 
+![Regra Local](evidence/img/print_regraLocal_10.png)
+
 A regra foi propositalmente simples e genérica — baseada em `content` sem qualquer dependência de `app-layer`, porta específica ou assinatura complexa. O objetivo era eliminar variáveis: se essa regra disparasse, a engine estaria comprovadamente funcional, restando isolar o problema exclusivamente nas assinaturas ET Open.
 
 ### 6.5 Novo teste com SQLMap
@@ -146,25 +150,13 @@ Com a `local.rules` carregada, o teste com SQLMap foi repetido.
 - alerta gerado corretamente no `eve.json`;
 - a regra local disparou conforme esperado, identificando a assinatura da ferramenta no tráfego.
 
----
-
-## 7. Evidências
-
-**Regra local carregada:**
-
-![Regra Local](evidence/img/print_regraLocal_10.png)
-
 **Alerta gerado no fast.log:**
 
 ![Detecção no fast.log](evidence/img/print_fastlogDetection_11.png)
 
-**Alerta gerado no eve.json:**
-
-![Alerta no EVE](evidence/img/print_eveAlert_12.png)
-
 ---
 
-## 8. Resultado da Investigação
+## 7. Resultado da Investigação
 
 Com os testes realizados, foi possível descartar, em sequência:
 
@@ -185,7 +177,7 @@ Essa hipótese **ainda não foi confirmada** e será tratada como ponto de parti
 
 ---
 
-## 9. Conclusão
+## 8. Conclusão parcial
 
 Esta investigação encerra a validação estrutural da pipeline de detecção do Suricata neste laboratório. Foi confirmado que a infraestrutura de captura, o parsing HTTP, a engine de regras e os mecanismos de logging (`fast.log` e `eve.json`) operam corretamente quando expostos a uma regra de teste simples.
 
