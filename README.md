@@ -21,7 +21,7 @@
 
 ## 1. Contexto
 
-O README principal do projeto encerrou-se com um detection gap não resolvido: o SQLMap identificava uma SQL Injection válida contra o OWASP Juice Shop, o tcpdump confirmava que o tráfego chegava à interface monitorada, o Suricata encontrava-se ativo e as regras ET Open estavam carregadas — porém nenhum alerta era gerado.
+O README principal do projeto encerrou-se com um detection gap não resolvido: o SQLMap identificava uma SQL Injection válida contra o OWASP Juice Shop, o tcpdump confirmava que o tráfego chegava à interface monitorada, o Suricata encontrava-se ativo e as regras ET Open estavam carregadas, porém nenhum alerta era gerado.
 
 A partir desse ponto, iniciou-se uma investigação dedicada a determinar em qual camada o problema estava localizado, entre quatro possibilidades:
 
@@ -74,7 +74,7 @@ No momento em que esta investigação foi iniciada, o cenário observado era o s
 | Alertas em `fast.log` | ✘ |
 | Alertas em `eve.json` | ✘ |
 
-A combinação de tráfego confirmado, engine ativa e regras carregadas — sem qualquer alerta correspondente — indicava que o problema não estava necessariamente nas regras, mas poderia estar em qualquer etapa anterior da pipeline.
+A combinação de tráfego confirmado, engine ativa e regras carregadas, sem qualquer alerta correspondente indicava que o problema não estava necessariamente nas regras, mas poderia estar em qualquer etapa anterior da pipeline.
 
 ---
 
